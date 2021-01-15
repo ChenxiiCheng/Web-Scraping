@@ -1,7 +1,6 @@
 const amazon = require('./amazon');
 
-const DETAILS_URL =
-  'https://www.amazon.com/Apple-iPad-Air-10-9-inch-Wi-Fi-64GB/dp/B08J66ZMY7';
+const DETAILS_URL = 'https://www.amazon.com/Apple-iPad-Air-10-9-inch-Wi-Fi-64GB/dp/B08J66ZMY7';
 
 async function main() {
   await amazon.initialze();

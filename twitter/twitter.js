@@ -4,12 +4,10 @@ const BASE_URL = 'https://twitter.com/home/';
 const LOGIN_URL = 'https://twitter.com/login';
 const USERNAME_URL = (username) => `https://twitter.com/${username}`;
 
-let browser = null,
-  page = null;
+let browser = null, page = null;
 
 const twitter = {
   initialize: async () => {
-    console.log('Initialize...');
     browser = await puppeteer.launch({ headless: false });
     page = await browser.newPage();
     await page.goto(LOGIN_URL, { waitUntil: 'networkidle2' });
@@ -23,24 +21,10 @@ const twitter = {
       await page.goto(LOGIN_URL, { waitUntil: 'networkidle2' });
     }
 
-    await page.waitFor(
-      'form[action="/sessions"] input[name="session[username_or_email]"]'
-    );
-    await page.type(
-      'form[action="/sessions"] input[name="session[username_or_email]"]',
-      username,
-      {
-        delay: 50,
-      }
-    );
-    await page.type(
-      'form[action="/sessions"] input[name="session[password]"]',
-      password,
-      { delay: 50 }
-    );
-    await page.click(
-      'div[role="button"][data-testid="LoginForm_Login_Button"]'
-    );
+    await page.waitFor('form[action="/sessions"] input[name="session[username_or_email]"]');
+    await page.type('form[action="/sessions"] input[name="session[username_or_email]"]', username, {delay: 50});
+    await page.type('form[action="/sessions"] input[name="session[password]"]', password, {delay: 50});
+    await page.click('div[role="button"][data-testid="LoginForm_Login_Button"]');
     await page.waitFor('.DraftEditor-root');
     await page.waitFor(1000);
   },
@@ -66,15 +50,13 @@ const twitter = {
       await page.goto(USERNAME_URL(username));
     }
 
-    const user = await page.evaluate(() => {
-      const companyName = page.$x(
-        '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[1]/div/span[1]/span'
-      )[0].innerText;
+    const company = page.$x(
+      '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[1]/div/span[1]/span'
+    )[0];
 
-      return {
-        companyName,
-      };
-    });
+    const user = await page.evaluate((el) => {
+      return el.innerText;
+    }, company);
 
     console.log(user);
     debugger;
